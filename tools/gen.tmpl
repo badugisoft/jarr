@@ -1,0 +1,79 @@
+// ********************************************************* //
+// The content of this file is auto-generated, DO NOT MODIFY //
+// ********************************************************* //
+
+package jarr
+
+{{range .}}
+type {{upper .}} []{{.}}
+
+func (s {{upper .}}) Equal(v {{upper .}}) bool {
+	if s == nil {
+		if v == nil {
+			return true
+		}
+		return false
+	} else if v == nil {
+		return false
+	} else if len(s) != len(v) {
+		return false
+	} else {
+		for i, e := range s {
+			if e != v[i] {
+				return false
+			}
+		}
+		return true
+	}
+}
+
+type {{upper .}}MapFunc func(current {{.}}, index int, array []{{.}}) {{.}}
+
+func (s {{upper .}}) Map(f {{upper .}}MapFunc) {{upper .}} {
+	r := make([]{{.}}, len(s))
+	for i, e := range s {
+		r[i] = f(e, i, s)
+	}
+	return r
+}
+
+type {{upper .}}ReduceFunc func(previousValue {{.}}, currentValue {{.}}, currentIndex int, array []{{.}}) {{.}}
+
+func (s {{upper .}}) Reduce(f {{upper .}}ReduceFunc, initialValue {{.}}) {{.}} {
+	r := initialValue
+	for i, e := range s {
+		r = f(r, e, i, s)
+	}
+	return r
+}
+
+type {{upper .}}TestFunc func(current {{.}}, index int, array []{{.}}) bool
+
+func (s {{upper .}}) Some(f {{upper .}}TestFunc) bool {
+	for i, e := range s {
+		if f(e, i, s) {
+			return true
+		}
+	}
+	return false
+}
+
+func (s {{upper .}}) Every(f {{upper .}}TestFunc) bool {
+	for i, e := range s {
+		if !f(e, i, s) {
+			return false
+		}
+	}
+	return true
+}
+
+func (s {{upper .}}) Filter(f {{upper .}}TestFunc) {{upper .}} {
+	r := []{{.}}{}
+	for i, e := range s {
+		if f(e, i, s) {
+			r = append(r, e)
+		}
+	}
+	return r
+}
+{{end}}
