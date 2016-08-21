@@ -2,6 +2,7 @@ package jarr
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -40,9 +41,9 @@ func TestStringEqual(t *testing.T) {
 
 func TestStringMap(t *testing.T) {
 	in := []string{"apple", "orange", "grape"}
-	ok := []string{"apple-0-3", "orange-1-3", "grape-2-3"}
-	res := String(in).Map(func(e string, i int, a []string) string {
-		return fmt.Sprintf("%v-%v-%v", e, i, len(a))
+	ok := []string{"Apples", "Oranges", "Grapes"}
+	res := String(in).Map(func(e string) string {
+		return fmt.Sprintf("%v%vs", strings.ToUpper(e[0:1]), e[1:])
 	})
 
 	_success(t, "res == ok", String(res).Equal(ok))
@@ -50,9 +51,9 @@ func TestStringMap(t *testing.T) {
 
 func TestStringReduce(t *testing.T) {
 	in := []string{"apple", "orange", "grape"}
-	ok := "start-apple-0-3-orange-1-3-grape-2-3"
-	res := String(in).Reduce(func(p string, e string, i int, a []string) string {
-		return fmt.Sprintf("%v-%v-%v-%v", p, e, i, len(a))
+	ok := "start-apple-orange-grape"
+	res := String(in).Reduce(func(p string, e string) string {
+		return fmt.Sprintf("%v-%v", p, e)
 	}, "start")
 
 	_success(t, "res == ok", res == ok)
@@ -61,29 +62,29 @@ func TestStringReduce(t *testing.T) {
 func TestStringSome(t *testing.T) {
 	in := []string{"apple", "orange", "grape"}
 
-	_success(t, "len(e) > 5", String(in).Some(func(e string, i int, a []string) bool { return len(e) > 5 }))
-	_fail(t, "len(e) > 6", String(in).Some(func(e string, i int, a []string) bool { return len(e) > 6 }))
-	_success(t, "e == \"apple\"", String(in).Some(func(e string, i int, a []string) bool { return e == "apple" }))
+	_success(t, "len(e) > 5", String(in).Some(func(e string) bool { return len(e) > 5 }))
+	_fail(t, "len(e) > 6", String(in).Some(func(e string) bool { return len(e) > 6 }))
+	_success(t, "e == \"apple\"", String(in).Some(func(e string) bool { return e == "apple" }))
 }
 
 func TestStringEvery(t *testing.T) {
 	in := []string{"apple", "orange", "grape"}
 
-	_success(t, "len(e) > 4", String(in).Every(func(e string, i int, a []string) bool { return len(e) > 4 }))
-	_fail(t, "len(e) > 5", String(in).Every(func(e string, i int, a []string) bool { return len(e) > 5 }))
-	_fail(t, "e == \"apple\"", String(in).Every(func(e string, i int, a []string) bool { return e == "apple" }))
+	_success(t, "len(e) > 4", String(in).Every(func(e string) bool { return len(e) > 4 }))
+	_fail(t, "len(e) > 5", String(in).Every(func(e string) bool { return len(e) > 5 }))
+	_fail(t, "e == \"apple\"", String(in).Every(func(e string) bool { return e == "apple" }))
 }
 
 func TestStringFilter(t *testing.T) {
 	in := []string{"apple", "orange", "grape"}
 
 	_success(t, "len(e) > 5",
-		String(in).Filter(func(e string, i int, a []string) bool {
+		String(in).Filter(func(e string) bool {
 			return len(e) > 5
 		}).Equal([]string{"orange"}))
 
 	_success(t, "e[0:1] == \"g\"",
-		String(in).Filter(func(e string, i int, a []string) bool {
+		String(in).Filter(func(e string) bool {
 			return e[0:1] == "g"
 		}).Equal([]string{"grape"}))
 }

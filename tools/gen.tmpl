@@ -27,31 +27,61 @@ func (s {{upper .}}) Equal(v {{upper .}}) bool {
 	}
 }
 
-type {{upper .}}MapFunc func(current {{.}}, index int, array []{{.}}) {{.}}
+type {{upper .}}MapFunc func(curr {{.}}) {{.}}
 
 func (s {{upper .}}) Map(f {{upper .}}MapFunc) {{upper .}} {
 	r := make([]{{.}}, len(s))
 	for i, e := range s {
-		r[i] = f(e, i, s)
+		r[i] = f(e)
 	}
 	return r
 }
 
-type {{upper .}}ReduceFunc func(previousValue {{.}}, currentValue {{.}}, currentIndex int, array []{{.}}) {{.}}
+type {{upper .}}MapIndexFunc func(curr {{.}}, index int) {{.}}
 
-func (s {{upper .}}) Reduce(f {{upper .}}ReduceFunc, initialValue {{.}}) {{.}} {
-	r := initialValue
+func (s {{upper .}}) MapIndex(f {{upper .}}MapIndexFunc) {{upper .}} {
+	r := make([]{{.}}, len(s))
 	for i, e := range s {
-		r = f(r, e, i, s)
+		r[i] = f(e, i)
 	}
 	return r
 }
 
-type {{upper .}}TestFunc func(current {{.}}, index int, array []{{.}}) bool
+type {{upper .}}ReduceFunc func(prev {{.}}, curr {{.}}) {{.}}
+
+func (s {{upper .}}) Reduce(f {{upper .}}ReduceFunc, init {{.}}) {{.}} {
+	r := init
+	for _, e := range s {
+		r = f(r, e)
+	}
+	return r
+}
+
+type {{upper .}}ReduceIndexFunc func(prev {{.}}, curr {{.}}, index int) {{.}}
+
+func (s {{upper .}}) ReduceIndex(f {{upper .}}ReduceIndexFunc, init {{.}}) {{.}} {
+	r := init
+	for i, e := range s {
+		r = f(r, e, i)
+	}
+	return r
+}
+
+type {{upper .}}TestFunc func(current {{.}}) bool
+type {{upper .}}TestIndexFunc func(current {{.}}, index int) bool
 
 func (s {{upper .}}) Some(f {{upper .}}TestFunc) bool {
+	for _, e := range s {
+		if f(e) {
+			return true
+		}
+	}
+	return false
+}
+
+func (s {{upper .}}) SomeIndex(f {{upper .}}TestIndexFunc) bool {
 	for i, e := range s {
-		if f(e, i, s) {
+		if f(e, i) {
 			return true
 		}
 	}
@@ -59,8 +89,17 @@ func (s {{upper .}}) Some(f {{upper .}}TestFunc) bool {
 }
 
 func (s {{upper .}}) Every(f {{upper .}}TestFunc) bool {
+	for _, e := range s {
+		if !f(e) {
+			return false
+		}
+	}
+	return true
+}
+
+func (s {{upper .}}) EveryIndex(f {{upper .}}TestIndexFunc) bool {
 	for i, e := range s {
-		if !f(e, i, s) {
+		if !f(e, i) {
 			return false
 		}
 	}
@@ -69,8 +108,18 @@ func (s {{upper .}}) Every(f {{upper .}}TestFunc) bool {
 
 func (s {{upper .}}) Filter(f {{upper .}}TestFunc) {{upper .}} {
 	r := []{{.}}{}
+	for _, e := range s {
+		if f(e) {
+			r = append(r, e)
+		}
+	}
+	return r
+}
+
+func (s {{upper .}}) FilterIndex(f {{upper .}}TestIndexFunc) {{upper .}} {
+	r := []{{.}}{}
 	for i, e := range s {
-		if f(e, i, s) {
+		if f(e, i) {
 			r = append(r, e)
 		}
 	}
