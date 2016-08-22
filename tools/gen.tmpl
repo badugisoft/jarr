@@ -4,10 +4,10 @@
 
 package jarr
 
-{{range .}}
-type {{upper .}} []{{.}}
+{{range $t := .}}
+type {{upper $t}} []{{$t}}
 
-func (s {{upper .}}) Equal(v {{upper .}}) bool {
+func (s {{upper $t}}) Equal(v {{upper $t}}) bool {
 	if s == nil {
 		if v == nil {
 			return true
@@ -27,29 +27,70 @@ func (s {{upper .}}) Equal(v {{upper .}}) bool {
 	}
 }
 
-type {{upper .}}MapFunc func(curr {{.}}) {{.}}
+type {{upper $t}}MapFunc func(cur {{$t}}) {{$t}}
 
-func (s {{upper .}}) Map(f {{upper .}}MapFunc) {{upper .}} {
-	r := make([]{{.}}, len(s))
+func (s {{upper $t}}) Map(f {{upper $t}}MapFunc) {{upper $t}} {
+	r := make([]{{$t}}, len(s))
 	for i, e := range s {
 		r[i] = f(e)
 	}
 	return r
 }
 
-type {{upper .}}MapIndexFunc func(curr {{.}}, index int) {{.}}
+type {{upper $t}}MapIndexFunc func(cur {{$t}}, idx int) {{$t}}
 
-func (s {{upper .}}) MapIndex(f {{upper .}}MapIndexFunc) {{upper .}} {
-	r := make([]{{.}}, len(s))
+func (s {{upper $t}}) MapIndex(f {{upper $t}}MapIndexFunc) {{upper $t}} {
+	r := make([]{{$t}}, len(s))
 	for i, e := range s {
 		r[i] = f(e, i)
 	}
 	return r
 }
+{{if ne $t "string"}}
+type {{upper $t}}MapStringFunc func(cur {{$t}}) string
 
-type {{upper .}}ReduceFunc func(prev {{.}}, curr {{.}}) {{.}}
+func (s {{upper $t}}) MapString(f {{upper $t}}MapStringFunc) String {
+	r := make([]string, len(s))
+	for i, e := range s {
+		r[i] = f(e)
+	}
+	return r
+}
 
-func (s {{upper .}}) Reduce(f {{upper .}}ReduceFunc, init {{.}}) {{.}} {
+type {{upper $t}}MapStringIndexFunc func(cur {{$t}}, idx int) string
+
+func (s {{upper $t}}) MapStringIndex(f {{upper $t}}MapStringIndexFunc) String {
+	r := make([]string, len(s))
+	for i, e := range s {
+		r[i] = f(e, i)
+	}
+	return r
+}
+{{end}}
+{{if ne $t "int"}}
+type {{upper $t}}MapIntFunc func(cur {{$t}}) int
+
+func (s {{upper $t}}) MapInt(f {{upper $t}}MapIntFunc) Int {
+	r := make([]int, len(s))
+	for i, e := range s {
+		r[i] = f(e)
+	}
+	return r
+}
+
+type {{upper $t}}MapIntIndexFunc func(cur {{$t}}, idx int) int
+
+func (s {{upper $t}}) MapIntIndex(f {{upper $t}}MapIntIndexFunc) Int {
+	r := make([]int, len(s))
+	for i, e := range s {
+		r[i] = f(e, i)
+	}
+	return r
+}
+{{end}}
+type {{upper $t}}ReduceFunc func(pre {{$t}}, cur {{$t}}) {{$t}}
+
+func (s {{upper $t}}) Reduce(f {{upper $t}}ReduceFunc, init {{$t}}) {{$t}} {
 	r := init
 	for _, e := range s {
 		r = f(r, e)
@@ -57,20 +98,61 @@ func (s {{upper .}}) Reduce(f {{upper .}}ReduceFunc, init {{.}}) {{.}} {
 	return r
 }
 
-type {{upper .}}ReduceIndexFunc func(prev {{.}}, curr {{.}}, index int) {{.}}
+type {{upper $t}}ReduceIndexFunc func(pre {{$t}}, cur {{$t}}, idx int) {{$t}}
 
-func (s {{upper .}}) ReduceIndex(f {{upper .}}ReduceIndexFunc, init {{.}}) {{.}} {
+func (s {{upper $t}}) ReduceIndex(f {{upper $t}}ReduceIndexFunc, init {{$t}}) {{$t}} {
 	r := init
 	for i, e := range s {
 		r = f(r, e, i)
 	}
 	return r
 }
+{{if ne $t "string"}}
+type {{upper $t}}ReduceStringFunc func(pre string, cur {{$t}}) string
 
-type {{upper .}}TestFunc func(current {{.}}) bool
-type {{upper .}}TestIndexFunc func(current {{.}}, index int) bool
+func (s {{upper $t}}) ReduceString(f {{upper $t}}ReduceStringFunc, init string) string {
+	r := init
+	for _, e := range s {
+		r = f(r, e)
+	}
+	return r
+}
 
-func (s {{upper .}}) Some(f {{upper .}}TestFunc) bool {
+type {{upper $t}}ReduceStringIndexFunc func(pre string, cur {{$t}}, idx int) string
+
+func (s {{upper $t}}) ReduceStringIndex(f {{upper $t}}ReduceStringIndexFunc, init string) string {
+	r := init
+	for i, e := range s {
+		r = f(r, e, i)
+	}
+	return r
+}
+{{end}}
+{{if ne $t "int"}}
+type {{upper $t}}ReduceIntFunc func(pre int, cur {{$t}}) int
+
+func (s {{upper $t}}) ReduceInt(f {{upper $t}}ReduceIntFunc, init int) int {
+	r := init
+	for _, e := range s {
+		r = f(r, e)
+	}
+	return r
+}
+
+type {{upper $t}}ReduceIntIndexFunc func(pre int, cur {{$t}}, idx int) int
+
+func (s {{upper $t}}) ReduceIntIndex(f {{upper $t}}ReduceIntIndexFunc, init int) int {
+	r := init
+	for i, e := range s {
+		r = f(r, e, i)
+	}
+	return r
+}
+{{end}}
+type {{upper $t}}TestFunc func(cur {{$t}}) bool
+type {{upper $t}}TestIndexFunc func(cur {{$t}}, idx int) bool
+
+func (s {{upper $t}}) Some(f {{upper $t}}TestFunc) bool {
 	for _, e := range s {
 		if f(e) {
 			return true
@@ -79,7 +161,7 @@ func (s {{upper .}}) Some(f {{upper .}}TestFunc) bool {
 	return false
 }
 
-func (s {{upper .}}) SomeIndex(f {{upper .}}TestIndexFunc) bool {
+func (s {{upper $t}}) SomeIndex(f {{upper $t}}TestIndexFunc) bool {
 	for i, e := range s {
 		if f(e, i) {
 			return true
@@ -88,7 +170,7 @@ func (s {{upper .}}) SomeIndex(f {{upper .}}TestIndexFunc) bool {
 	return false
 }
 
-func (s {{upper .}}) Every(f {{upper .}}TestFunc) bool {
+func (s {{upper $t}}) Every(f {{upper $t}}TestFunc) bool {
 	for _, e := range s {
 		if !f(e) {
 			return false
@@ -97,7 +179,7 @@ func (s {{upper .}}) Every(f {{upper .}}TestFunc) bool {
 	return true
 }
 
-func (s {{upper .}}) EveryIndex(f {{upper .}}TestIndexFunc) bool {
+func (s {{upper $t}}) EveryIndex(f {{upper $t}}TestIndexFunc) bool {
 	for i, e := range s {
 		if !f(e, i) {
 			return false
@@ -106,8 +188,8 @@ func (s {{upper .}}) EveryIndex(f {{upper .}}TestIndexFunc) bool {
 	return true
 }
 
-func (s {{upper .}}) Filter(f {{upper .}}TestFunc) {{upper .}} {
-	r := []{{.}}{}
+func (s {{upper $t}}) Filter(f {{upper $t}}TestFunc) {{upper $t}} {
+	r := []{{$t}}{}
 	for _, e := range s {
 		if f(e) {
 			r = append(r, e)
@@ -116,8 +198,8 @@ func (s {{upper .}}) Filter(f {{upper .}}TestFunc) {{upper .}} {
 	return r
 }
 
-func (s {{upper .}}) FilterIndex(f {{upper .}}TestIndexFunc) {{upper .}} {
-	r := []{{.}}{}
+func (s {{upper $t}}) FilterIndex(f {{upper $t}}TestIndexFunc) {{upper $t}} {
+	r := []{{$t}}{}
 	for i, e := range s {
 		if f(e, i) {
 			r = append(r, e)
