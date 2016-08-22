@@ -1,4 +1,4 @@
-package jarr
+package jarr_test
 
 import "testing"
 
