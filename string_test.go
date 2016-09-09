@@ -14,4 +14,5 @@ func TestJoin(t *testing.T) {
 	_success(t, "String.JoinBrace", jarr.String(strs).JoinBrace("(", ",", ")") == "(apple,orange,grape)")
 	_success(t, "Int.Join", jarr.Int(ints).Join(", ") == "1, 3, 5, 7, 9")
 	_success(t, "Int.JoinBrace", jarr.Int(ints).JoinBrace("[", ",", "]") == "[1,3,5,7,9]")
+	_success(t, "String.Prefix", jarr.String(strs).Prefix("+").Join("|") == "+apple|+orange|+grape")
 }

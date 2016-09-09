@@ -60,3 +60,15 @@ func (s Uint64) JoinBrace(open, delim, close string) string {
 		return strconv.FormatUint(e, 10)
 	}).JoinBrace(open, delim, close)
 }
+
+func (s String) Prefix(str string) String {
+	return s.Map(func(e string) string {
+		return str + e
+	})
+}
+
+func (s String) Suffix(str string) String {
+	return s.Map(func(e string) string {
+		return e + str
+	})
+}
