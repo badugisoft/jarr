@@ -1,0 +1,19 @@
+// ********************************************************* //
+// The content of this file is auto-generated, DO NOT MODIFY //
+// ********************************************************* //
+
+package jarr
+
+{{range .Types}}
+func Each{{.Name}}(s []{{.Type}}, f func(e *{{.Type}})) {
+	for i, l := 0, len(s); i < l; i++ {
+		f(&s[i])
+	}
+}
+
+func Each{{.Name}}Index(s []{{.Type}}, f func(i int, e *{{.Type}})) {
+	for i, l := 0, len(s); i < l; i++ {
+		f(i, &s[i])
+	}
+}
+{{end}}

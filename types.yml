@@ -1,0 +1,27 @@
+Types:
+  - Type: string
+    Name: String
+  - Type: int
+    Name: Int
+  - Type: uint
+    Name: Uint
+  - Type: int8
+    Name: Int8
+  - Type: uint8
+    Name: Uint8
+  - Type: int16
+    Name: Int16
+  - Type: uint16
+    Name: Uint16
+  - Type: int32
+    Name: Int32
+  - Type: uint32
+    Name: Uint32
+  - Type: int64
+    Name: Int64
+  - Type: uint64
+    Name: Uint64
+  - Type: bool
+    Name: Bool
+  - Type: rune
+    Name: rune

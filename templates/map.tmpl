@@ -1,0 +1,31 @@
+// ********************************************************* //
+// The content of this file is auto-generated, DO NOT MODIFY //
+// ********************************************************* //
+
+package jarr
+
+import "reflect"
+
+{{range .Types}}
+type Map{{.Name}}Func func(e interface{}) {{.Type}}
+
+func Map{{.Name}}(slice interface{}, f Map{{.Name}}Func) []{{.Type}} {
+	v := reflect.ValueOf(slice)
+	ret := make([]{{.Type}}, v.Len())
+	for i := 0; i < v.Len(); i++ {
+		ret[i] = f(v.Index(i).Addr().Interface())
+	}
+	return ret
+}
+
+type Map{{.Name}}IndexFunc func(i int, e interface{}) {{.Type}}
+
+func Map{{.Name}}Index(slice interface{}, f Map{{.Name}}IndexFunc) []{{.Type}} {
+	v := reflect.ValueOf(slice)
+	ret := make([]{{.Type}}, v.Len())
+	for i := 0; i < v.Len(); i++ {
+		ret[i] = f(i, v.Index(i).Addr().Interface())
+	}
+	return ret
+}
+{{end}}
