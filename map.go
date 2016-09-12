@@ -222,7 +222,7 @@ func MapBoolIndex(slice interface{}, f func(i int, e interface{}) bool) []bool {
 	return ret
 }
 
-func Maprune(slice interface{}, f func(e interface{}) rune) []rune {
+func MapRune(slice interface{}, f func(e interface{}) rune) []rune {
 	v := reflect.ValueOf(slice)
 	ret := make([]rune, v.Len())
 	for i := 0; i < v.Len(); i++ {
@@ -231,7 +231,7 @@ func Maprune(slice interface{}, f func(e interface{}) rune) []rune {
 	return ret
 }
 
-func MapruneIndex(slice interface{}, f func(i int, e interface{}) rune) []rune {
+func MapRuneIndex(slice interface{}, f func(i int, e interface{}) rune) []rune {
 	v := reflect.ValueOf(slice)
 	ret := make([]rune, v.Len())
 	for i := 0; i < v.Len(); i++ {

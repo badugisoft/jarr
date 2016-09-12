@@ -24,4 +24,4 @@ Types:
   - Type: bool
     Name: Bool
   - Type: rune
-    Name: rune
+    Name: Rune

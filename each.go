@@ -148,13 +148,13 @@ func EachBoolIndex(s []bool, f func(i int, e *bool)) {
 	}
 }
 
-func Eachrune(s []rune, f func(e *rune)) {
+func EachRune(s []rune, f func(e *rune)) {
 	for i, l := 0, len(s); i < l; i++ {
 		f(&s[i])
 	}
 }
 
-func EachruneIndex(s []rune, f func(i int, e *rune)) {
+func EachRuneIndex(s []rune, f func(i int, e *rune)) {
 	for i, l := 0, len(s); i < l; i++ {
 		f(i, &s[i])
 	}
