@@ -7,9 +7,7 @@ package jarr
 import "reflect"
 
 {{range .Types}}
-type Map{{.Name}}Func func(e interface{}) {{.Type}}
-
-func Map{{.Name}}(slice interface{}, f Map{{.Name}}Func) []{{.Type}} {
+func Map{{.Name}}(slice interface{}, f func(e interface{}) {{.Type}}) []{{.Type}} {
 	v := reflect.ValueOf(slice)
 	ret := make([]{{.Type}}, v.Len())
 	for i := 0; i < v.Len(); i++ {
@@ -18,9 +16,7 @@ func Map{{.Name}}(slice interface{}, f Map{{.Name}}Func) []{{.Type}} {
 	return ret
 }
 
-type Map{{.Name}}IndexFunc func(i int, e interface{}) {{.Type}}
-
-func Map{{.Name}}Index(slice interface{}, f Map{{.Name}}IndexFunc) []{{.Type}} {
+func Map{{.Name}}Index(slice interface{}, f func(i int, e interface{}) {{.Type}}) []{{.Type}} {
 	v := reflect.ValueOf(slice)
 	ret := make([]{{.Type}}, v.Len())
 	for i := 0; i < v.Len(); i++ {
