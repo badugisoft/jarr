@@ -1,15 +1,22 @@
 package jarr_test
 
-import "testing"
+import (
+	"regexp"
+	"runtime/debug"
+	"strings"
+	"testing"
+)
 
-func _success(t *testing.T, desc string, expr bool) {
+var reg = regexp.MustCompile("([\\w_]+.go:\\d+)")
+
+func _true(t *testing.T, expr bool) {
 	if !expr {
-		t.Error(desc)
+		t.Error(reg.FindString(strings.Split(string(debug.Stack()), "\n")[6]))
 	}
 }
 
-func _fail(t *testing.T, desc string, expr bool) {
+func _false(t *testing.T, expr bool) {
 	if expr {
-		t.Error(desc)
+		t.Error(reg.FindString(strings.Split(string(debug.Stack()), "\n")[6]))
 	}
 }

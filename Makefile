@@ -1,19 +1,24 @@
 #! /usr/bin/make
 
+sources := $(shell find ./templates -name '*.tmpl')
+functions := $(foreach name, $(sources), $(subst .tmpl,,$(subst ./templates/,,$(name))))
+generated := $(foreach name, $(functions), $(name).gen.go)
+
 .PHONY:
 
-all: test
-
-test: *.go
+all: *.go $(generated)
 	@go test -v
 
-each.go: templates/each.tmpl types.yml
-	@echo generating... each.go
-	@gotpl templates/each.tmpl < types.yml | gofmt > each.go
+%.gen.go: templates/%.tmpl
+	@echo generating... $@
+	@gotpl $< < types.yml | gofmt | goimports > $@
 
-map.go: templates/map.tmpl types.yml
-	@echo generating... map.go
-	@gotpl templates/map.tmpl < types.yml | gofmt > map.go
+test:
+	@go test -v
 
 tools:
 	@go get cmd/gofmt
+	@go get golang.org/x/tools/cmd/goimports
+
+clean:
+	@rm *.gen.go

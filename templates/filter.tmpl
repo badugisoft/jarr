@@ -1,0 +1,31 @@
+// ********************************************************* //
+// The content of this file is auto-generated, DO NOT MODIFY //
+// ********************************************************* //
+
+package jarr
+
+import "reflect"
+
+{{range .Types}}
+func Filter{{.Name}}(slice []{{.Type}}, f func(e {{.Type}}) bool) []{{.Type}} {
+	ret := []{{.Type}}{}
+	for _, e := range slice {
+		if f(e) {
+			ret = append(ret, e)
+		}
+	}
+	return ret
+}
+
+func Filter{{.Name}}Index(slice []{{.Type}}, f func(i int, e {{.Type}}) bool) []{{.Type}} {
+	ret := []{{.Type}}{}
+	for i, e := range slice {
+		if f(i, e) {
+			ret = append(ret, e)
+		}
+	}
+	return ret
+}
+{{end}}
+
+

@@ -7,20 +7,36 @@ package jarr
 import "reflect"
 
 {{range .Types}}
-func Map{{.Name}}(slice interface{}, f func(e interface{}) {{.Type}}) []{{.Type}} {
-	v := reflect.ValueOf(slice)
-	ret := make([]{{.Type}}, v.Len())
-	for i := 0; i < v.Len(); i++ {
-		ret[i] = f(v.Index(i).Addr().Interface())
+func Map{{.Name}}(slice []{{.Type}}, f func(e {{.Type}}) {{.Type}}) []{{.Type}} {
+	ret := make([]{{.Type}}, len(slice))
+	for i, e := range slice {
+		ret[i] = f(e)
 	}
 	return ret
 }
 
-func Map{{.Name}}Index(slice interface{}, f func(i int, e interface{}) {{.Type}}) []{{.Type}} {
+func Map{{.Name}}Index(slice []{{.Type}}, f func(i int, e {{.Type}}) {{.Type}}) []{{.Type}} {
+	ret := make([]{{.Type}}, len(slice))
+	for i, e := range slice {
+		ret[i] = f(i, e)
+	}
+	return ret
+}
+
+func MapTo{{.Name}}(slice interface{}, f func(e interface{}) {{.Type}}) []{{.Type}} {
 	v := reflect.ValueOf(slice)
 	ret := make([]{{.Type}}, v.Len())
-	for i := 0; i < v.Len(); i++ {
-		ret[i] = f(i, v.Index(i).Addr().Interface())
+	for i, end := 0, v.Len(); i < end; i++ {
+		ret[i] = f(v.Index(i).Interface())
+	}
+	return ret
+}
+
+func MapTo{{.Name}}Index(slice interface{}, f func(i int, e interface{}) {{.Type}}) []{{.Type}} {
+	v := reflect.ValueOf(slice)
+	ret := make([]{{.Type}}, v.Len())
+	for i, end := 0, v.Len(); i < end; i++ {
+		ret[i] = f(i, v.Index(i).Interface())
 	}
 	return ret
 }

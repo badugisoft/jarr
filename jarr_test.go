@@ -7,70 +7,143 @@ import (
 	"github.com/badugisoft/jarr"
 )
 
-func TestSliceEqual(t *testing.T) {
+func TestEqual(t *testing.T) {
 	s1 := []int{1, 2, 3, 4, 5}
 	s2 := []int{1, 2, 3, 4, 5}
 	s3 := []int{1, 2, 3, 4, 6}
 
-	_success(t, "s1 == s2", jarr.Equal(s1, s2))
-	_fail(t, "s1 == s3", jarr.Equal(s1, s3))
-	_fail(t, "s1 == nil", jarr.Equal(s1, nil))
-	_success(t, "nil == nil", jarr.Equal(nil, nil))
+	_true(t, jarr.Equal(s1, s2))
+	_false(t, jarr.Equal(s1, s3))
+	_false(t, jarr.Equal(s1, nil))
+	_true(t, jarr.Equal(nil, nil))
 }
 
-func ExampleSliceEqual() {
+func ExampleEqual() {
 	s1 := []int{1, 2, 3, 4, 5}
 	s2 := []int{1, 2, 3, 4, 5}
+	s3 := []int{1, 2, 3, 4, 6}
 
 	fmt.Println(jarr.Equal(s1, s2))
+	fmt.Println(jarr.Equal(s1, s3))
+	fmt.Println(jarr.Equal(s1, nil))
+	fmt.Println(jarr.Equal(nil, nil))
 	// output:
+	// true
+	// false
+	// false
 	// true
 }
 
-func TestEach(t *testing.T) {
+func TestNotEqual(t *testing.T) {
 	s1 := []int{1, 2, 3, 4, 5}
-	s2 := []int{2, 3, 4, 5, 6}
-	jarr.Each(s1, func(e interface{}) {
-		p := e.(*int)
-		*p++
-	})
+	s2 := []int{1, 2, 3, 4, 5}
+	s3 := []int{1, 2, 3, 4, 6}
 
-	_success(t, "s1 == s2", jarr.Equal(s1, s2))
+	_false(t, jarr.NotEqual(s1, s2))
+	_true(t, jarr.NotEqual(s1, s3))
+	_true(t, jarr.NotEqual(s1, nil))
+	_false(t, jarr.NotEqual(nil, nil))
 }
 
-func ExampleEach() {
+func ExampleNotEqual() {
 	s1 := []int{1, 2, 3, 4, 5}
+	s2 := []int{1, 2, 3, 4, 5}
+	s3 := []int{1, 2, 3, 4, 6}
 
-	jarr.Each(s1, func(e interface{}) {
-		p := e.(*int)
-		*p += 3
-	})
-
-	fmt.Println(s1)
+	fmt.Println(jarr.NotEqual(s1, s2))
+	fmt.Println(jarr.NotEqual(s1, s3))
+	fmt.Println(jarr.NotEqual(s1, nil))
+	fmt.Println(jarr.NotEqual(nil, nil))
 	// output:
-	// [4 5 6 7 8]
+	// false
+	// true
+	// true
+	// false
 }
 
-func TestEachIndex(t *testing.T) {
-	s1 := []int{5, 6, 7, 8}
-	s2 := []int{5, 5, 5, 5}
-	jarr.EachIndex(s1, func(i int, e interface{}) {
-		p := e.(*int)
-		*p -= i
-	})
+func TestPrefix(t *testing.T) {
+	s := []string{"one", "two", "three"}
 
-	_success(t, "s1 == s2", jarr.Equal(s1, s2))
+	_true(t, jarr.Equal(
+		[]string{"tweenty one", "tweenty two", "tweenty three"},
+		jarr.Prefix(s, "tweenty ")))
 }
 
-func ExampleEachIndex() {
-	s1 := []int{5, 6, 7}
+func ExamplePrefix() {
+	s := []string{"one", "two", "three"}
 
-	jarr.EachIndex(s1, func(i int, e interface{}) {
-		p := e.(*int)
-		*p += i * i
-	})
-
-	fmt.Println(s1)
+	fmt.Println(jarr.Prefix(s, "tweenty "))
 	// output:
-	// [5 7 11]
+	// [tweenty one tweenty two tweenty three]
+}
+
+func TestSuffix(t *testing.T) {
+	s := []string{"one", "two", "three"}
+
+	_true(t, jarr.Equal(
+		[]string{"one boy(s)", "two boy(s)", "three boy(s)"},
+		jarr.Suffix(s, " boy(s)")))
+
+}
+
+func ExampleSuffix() {
+	s := []string{"one", "two", "three"}
+
+	fmt.Println(jarr.Suffix(s, " boy(s)"))
+	// output:
+	// [one boy(s) two boy(s) three boy(s)]
+}
+
+func TestSuffixPlural(t *testing.T) {
+	s := []string{"one", "two", "three"}
+
+	_true(t, jarr.Equal(
+		[]string{"one boy", "two boys", "three boys"},
+		jarr.SuffixPlural(s, " boy", " boys")))
+}
+
+func ExampleSuffixPlural() {
+	s := []string{"one", "two", "three"}
+
+	fmt.Println(jarr.SuffixPlural(s, " boy", " boys"))
+	// output:
+	// [one boy two boys three boys]
+}
+
+func TestJoin(t *testing.T) {
+	s1 := []string{"one", "two", "three"}
+	s2 := []int{1, 3, 5, 7}
+
+	_true(t, "one,two,three" == jarr.Join(s1, ","))
+	_true(t, "1,3,5,7" == jarr.Join(s2, ","))
+}
+
+func ExampleJoin() {
+	s1 := []string{"one", "two", "three"}
+	s2 := []int{1, 3, 5, 7}
+
+	fmt.Println(jarr.Join(s1, ","))
+	fmt.Println(jarr.Join(s2, ","))
+	// output:
+	// one,two,three
+	// 1,3,5,7
+}
+
+func TestJoinBrace(t *testing.T) {
+	s1 := []string{"one", "two", "three"}
+	s2 := []int{1, 3, 5, 7}
+
+	_true(t, "[one,two,three]" == jarr.JoinBrace(s1, "[", ",", "]"))
+	_true(t, "<1,3,5,7>" == jarr.JoinBrace(s2, "<", ",", ">"))
+}
+
+func ExampleJoinBrace() {
+	s1 := []string{"one", "two", "three"}
+	s2 := []int{1, 3, 5, 7}
+
+	fmt.Println(jarr.JoinBrace(s1, "[", ",", "]"))
+	fmt.Println(jarr.JoinBrace(s2, "<", ",", ">"))
+	// output:
+	// [one,two,three]
+	// <1,3,5,7>
 }

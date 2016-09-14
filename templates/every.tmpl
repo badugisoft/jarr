@@ -1,0 +1,27 @@
+// ********************************************************* //
+// The content of this file is auto-generated, DO NOT MODIFY //
+// ********************************************************* //
+
+package jarr
+
+import "reflect"
+
+{{range .Types}}
+func Every{{.Name}}(slice []{{.Type}}, f func(e {{.Type}}) bool) bool {
+	for _, e := range slice {
+		if !f(e) {
+			return false
+		}
+	}
+	return true
+}
+
+func Every{{.Name}}Index(slice []{{.Type}}, f func(i int, e {{.Type}}) bool) bool {
+	for i, e := range slice {
+		if !f(i, e) {
+			return false
+		}
+	}
+	return true
+}
+{{end}}

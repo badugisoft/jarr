@@ -5,15 +5,15 @@
 package jarr
 
 {{range .Types}}
-func Each{{.Name}}(s []{{.Type}}, f func(e *{{.Type}})) {
-	for i, l := 0, len(s); i < l; i++ {
-		f(&s[i])
+func Each{{.Name}}(slice []{{.Type}}, f func(e *{{.Type}})) {
+	for i, end := 0, len(slice); i < end; i++ {
+		f(&slice[i])
 	}
 }
 
-func Each{{.Name}}Index(s []{{.Type}}, f func(i int, e *{{.Type}})) {
-	for i, l := 0, len(s); i < l; i++ {
-		f(i, &s[i])
+func Each{{.Name}}Index(slice []{{.Type}}, f func(i int, e *{{.Type}})) {
+	for i, end := 0, len(slice); i < end; i++ {
+		f(i, &slice[i])
 	}
 }
 {{end}}
