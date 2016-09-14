@@ -147,3 +147,22 @@ func ExampleJoinBrace() {
 	// [one,two,three]
 	// <1,3,5,7>
 }
+
+func TestJoinf(t *testing.T) {
+	s1 := []string{"one", "two", "three"}
+	s2 := []int{1, 3, 5, 7}
+
+	_true(t, `"one","two","three"` == jarr.Joinf(s1, ",", "%#v"))
+	_true(t, "01,03,05,07" == jarr.Joinf(s2, ",", "%02d"))
+}
+
+func ExampleJoinf() {
+	s1 := []string{"one", "two", "three"}
+	s2 := []int{1, 3, 5, 7}
+
+	fmt.Println(jarr.Joinf(s1, ",", "%#v"))
+	fmt.Println(jarr.Joinf(s2, ",", "%02d"))
+	// output:
+	// "one","two","three"
+	// 01,03,05,07
+}
