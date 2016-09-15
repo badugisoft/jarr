@@ -61,6 +61,19 @@ func ExampleNotEqual() {
 	// false
 }
 
+func TestCond(t *testing.T) {
+	_true(t, jarr.Cond(true, 1, 2) == 1)
+	_true(t, jarr.Cond(false, 1, 2) == 2)
+}
+
+func ExampleCond() {
+	fmt.Println(jarr.Cond(true, 1, 2))
+	fmt.Println(jarr.Cond(false, 1, 2))
+	// output:
+	// 1
+	// 2
+}
+
 func TestPrefix(t *testing.T) {
 	s := []string{"one", "two", "three"}
 

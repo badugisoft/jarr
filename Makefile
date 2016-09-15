@@ -19,6 +19,7 @@ test:
 tools:
 	@go get cmd/gofmt
 	@go get golang.org/x/tools/cmd/goimports
+	@go get github.com/tsg/gotpl
 
 clean:
 	@rm *.gen.go

@@ -1,0 +1,39 @@
+// ********************************************************* //
+// The content of this file is auto-generated, DO NOT MODIFY //
+// ********************************************************* //
+
+package jarr
+
+import "reflect"
+
+{{range .Types}}
+func ReduceTo{{.Name}}(slice interface{}, f func(prev {{.Type}}, e interface{}) {{.Type}}, init {{.Type}}) {{.Type}} {
+	v := reflect.ValueOf(slice)
+	for i, end := 0, v.Len(); i < end; i++ {
+		init = f(init, v.Index(i).Interface())
+	}
+	return init
+}
+
+func ReduceTo{{.Name}}Index(slice interface{}, f func(prev {{.Type}}, i int, e interface{}) {{.Type}}, init {{.Type}}) {{.Type}} {
+	v := reflect.ValueOf(slice)
+	for i, end := 0, v.Len(); i < end; i++ {
+		init = f(init, i, v.Index(i).Interface())
+	}
+	return init
+}
+
+func Reduce{{.Name}}(slice []{{.Type}}, f func(prev {{.Type}}, e {{.Type}}) {{.Type}}, init {{.Type}}) {{.Type}} {
+	for _, e := range slice {
+		init = f(init, e)
+	}
+	return init
+}
+
+func Reduce{{.Name}}Index(slice []{{.Type}}, f func(prev {{.Type}}, i int, e {{.Type}}) {{.Type}}, init {{.Type}}) {{.Type}} {
+	for i, e := range slice {
+		init = f(init, i, e)
+	}
+	return init
+}
+{{end}}
