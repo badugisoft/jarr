@@ -179,3 +179,50 @@ func ExampleJoinf() {
 	// "one","two","three"
 	// 01,03,05,07
 }
+
+func TestReverse(t *testing.T) {
+	s1 := []string{"one", "two", "three"}
+	s2 := []int{1, 2, 3}
+
+	_true(t, jarr.Equal([]string{"three", "two", "one"}, jarr.Reverse(s1)))
+	_true(t, jarr.Equal([]int{3, 2, 1}, jarr.Reverse(s2)))
+}
+
+func ExampleReverse() {
+	s1 := []string{"one", "two", "three"}
+	s2 := []int{1, 2, 3}
+
+	fmt.Println(jarr.Reverse(s1))
+	fmt.Println(jarr.Reverse(s2))
+	// output:
+	// [three two one]
+	// [3 2 1]
+}
+
+func TestReverseString(t *testing.T) {
+	s := []string{"one", "two", "three"}
+
+	_true(t, jarr.Equal([]string{"three", "two", "one"}, jarr.ReverseString(s)))
+}
+
+func ExampleReverseString() {
+	s := []string{"one", "two", "three"}
+
+	fmt.Println(jarr.ReverseString(s))
+	// output:
+	// [three two one]
+}
+
+func TestReverseInt(t *testing.T) {
+	s := []int{1, 2, 3}
+
+	_true(t, jarr.Equal([]int{3, 2, 1}, jarr.ReverseInt(s)))
+}
+
+func ExampleReverseInt() {
+	s := []int{1, 2, 3}
+
+	fmt.Println(jarr.ReverseInt(s))
+	// output:
+	// [3 2 1]
+}

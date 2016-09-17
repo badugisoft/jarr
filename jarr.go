@@ -53,11 +53,11 @@ func Join(slice interface{}, delim string) string {
 		}), delim)
 }
 
-func JoinBrace(slice interface{}, start, delim, end string) string {
-	return start + strings.Join(
+func JoinBrace(slice interface{}, open, delim, close string) string {
+	return open + strings.Join(
 		MapToString(slice, func(e interface{}) string {
 			return fmt.Sprintf("%v", e)
-		}), delim) + end
+		}), delim) + close
 }
 
 func Joinf(slice interface{}, delim, format string) string {
@@ -67,21 +67,19 @@ func Joinf(slice interface{}, delim, format string) string {
 		}), delim)
 }
 
-func JoinfBrace(slice interface{}, start, delim, end, format string) string {
-	return start + strings.Join(
+func JoinfBrace(slice interface{}, open, delim, close, format string) string {
+	return open + strings.Join(
 		MapToString(slice, func(e interface{}) string {
 			return fmt.Sprintf(format, e)
-		}), delim) + end
+		}), delim) + close
 }
 
 func Reverse(slice interface{}) interface{} {
-	return nil
-}
-
-func ReverseString(slice []string) []string {
-	l := len(slice)
-	for i, end := 0, l/2; i < end; i++ {
-		slice[i], slice[l-i-1] = slice[l-i-1], slice[i]
+	v := reflect.ValueOf(slice)
+	l := v.Len()
+	ret := reflect.MakeSlice(reflect.TypeOf(slice), l, l)
+	for i := 0; i < l; i++ {
+		ret.Index(l - i - 1).Set(v.Index(i))
 	}
-	return slice
+	return ret.Interface()
 }

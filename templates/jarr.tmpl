@@ -13,3 +13,13 @@ func Cond{{.Name}}(c bool, t, f {{.Type}}) {{.Type}} {
 	}
 }
 {{end}}
+{{range .Types}}
+func Reverse{{.Name}}(slice []{{.Type}}) []{{.Type}} {
+	l := len(slice)
+	r := make([]{{.Type}}, l)
+	for i, e := range slice {
+		r[l-i-1] = e
+	}
+	return r
+}
+{{end}}
