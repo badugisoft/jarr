@@ -3,6 +3,7 @@ Golang implementation of Javascript array functions like map, reduce, ...
 
 
 [![GoDoc](https://godoc.org/gopkg.in/badugisoft/jarr.v2?status.svg)](https://godoc.org/gopkg.in/badugisoft/jarr.v2)
+[![Build Status](https://travis-ci.org/badugisoft/jarr.svg?branch=v2)](https://travis-ci.org/badugisoft/jarr)
 [![Build Status](https://drone.io/github.com/badugisoft/jarr/status.png)](https://drone.io/github.com/badugisoft/jarr/latest)
 
 ## Getting started
