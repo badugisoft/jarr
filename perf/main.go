@@ -9,120 +9,84 @@ import (
 )
 
 var eachTests = []tuple.StringPair{
-	tuple.StringPair{
-		First: "jarr.Each",
-		Second: func(data []int) {
-			jarr.Each(data, func(e interface{}) {
-				p := e.(*int)
-				*p = (*p) * (*p)
-			})
-		},
-	},
-	tuple.StringPair{
-		First: "jarr.EachInt",
-		Second: func(data []int) {
-			jarr.EachInt(data, func(e *int) {
-				*e = (*e) * (*e)
-			})
-		},
-	},
-	tuple.StringPair{
-		First: "for",
-		Second: func(data []int) {
-			for i, e := range data {
-				data[i] = e * e
-			}
-		},
-	},
+	tuple.NewStringPair("jarr.Each", func(data []int) interface{} {
+		return jarr.Each(data, func(e interface{}) {
+			p := e.(*int)
+			*p = (*p) * (*p)
+		})
+	}),
+	tuple.NewStringPair("jarr.EachInt", func(data []int) interface{} {
+		return jarr.EachInt(data, func(e *int) {
+			*e = (*e) * (*e)
+		})
+	}),
+	tuple.NewStringPair("for", func(data []int) interface{} {
+		for i, e := range data {
+			data[i] = e * e
+		}
+		return data
+	}),
 }
 
 var mapTests = []tuple.StringPair{
-	tuple.StringPair{
-		First: "jarr.Map",
-		Second: func(data []int) {
-			jarr.Map(data, func(e interface{}) interface{} {
-				return e.(int) * e.(int)
-			})
-		},
-	},
-	tuple.StringPair{
-		First: "jarr.MapInt",
-		Second: func(data []int) {
-			jarr.MapInt(data, func(e int) int {
-				return e * e
-			})
-		},
-	},
-	tuple.StringPair{
-		First: "jarr.MapToInt",
-		Second: func(data []int) {
-			jarr.MapToInt(data, func(e interface{}) int {
-				return e.(int) * e.(int)
-			})
-		},
-	},
-	tuple.StringPair{
-		First: "for (append)",
-		Second: func(data []int) {
-			res := []int{}
-			for _, e := range data {
-				res = append(res, e*e)
-			}
-		},
-	},
-	tuple.StringPair{
-		First: "for (allocated)",
-		Second: func(data []int) {
-			res := make([]int, len(data))
-			for i, e := range data {
-				res[i] = e * e
-			}
-		},
-	},
+	tuple.NewStringPair("jarr.Map", func(data []int) {
+		return jarr.Map(data, func(e interface{}) interface{} {
+			return e.(int) * e.(int)
+		})
+	}),
+	tuple.NewStringPair("jarr.MapInt", func(data []int) interface{} {
+		return jarr.MapInt(data, func(e int) int {
+			return e * e
+		})
+	}),
+	tuple.NewStringPair("jarr.MapToInt", func(data []int) interface{} {
+		return jarr.MapToInt(data, func(e interface{}) int {
+			return e.(int) * e.(int)
+		})
+	}),
+	tuple.NewStringPair("for (append)", func(data []int) interface{} {
+		res := []int{}
+		for _, e := range data {
+			res = append(res, e*e)
+		}
+		return res
+	}),
+	tuple.NewStringPair("for (allocated)", func(data []int) interface{} {
+		res := make([]int, len(data))
+		for i, e := range data {
+			res[i] = e * e
+		}
+		return res
+	}),
 }
 
 var reduceTests = []tuple.StringPair{
-	tuple.StringPair{
-		First: "jarr.Reduce",
-		Second: func(data []int) {
-			jarr.Reduce(data, func(p, e interface{}) interface{} {
-				return p.(int) + e.(int)
-			}, 0)
-		},
-	},
-	tuple.StringPair{
-		First: "jarr.ReduceInt",
-		Second: func(data []int) {
-			jarr.ReduceInt(data, func(p, e int) int {
-				return p + e
-			}, 0)
-		},
-	},
-	tuple.StringPair{
-		First: "jarr.ReduceToInt",
-		Second: func(data []int) {
-			jarr.ReduceToInt(data, func(p int, e interface{}) int {
-				return p + e.(int)
-			}, 0)
-		},
-	},
-	tuple.StringPair{
-		First: "for",
-		Second: func(data []int) {
-			sum := 0
-			for _, e := range data {
-				sum += e
-			}
-		},
-	},
+	tuple.NewStringPair("jarr.Reduce", func(data []int) interface{} {
+		return jarr.Reduce(data, func(p, e interface{}) interface{} {
+			return p.(int) + e.(int)
+		}, 0)
+	}),
+	tuple.NewStringPair("jarr.ReduceInt", func(data []int) interface{} {
+		return jarr.ReduceInt(data, func(p, e int) int {
+			return p + e
+		}, 0)
+	}),
+	tuple.NewStringPair("jarr.ReduceToInt", func(data []int) interface{} {
+		return jarr.ReduceToInt(data, func(p int, e interface{}) int {
+			return p + e.(int)
+		}, 0)
+	}),
+	tuple.NewStringPair("for", func(data []int) interface{} {
+		sum := 0
+		for _, e := range data {
+			sum += e
+		}
+		return sum
+	}),
 }
 
 func makeIntSlice(size int) []int {
-	data := make([]int, size)
-	for i := 0; i < size; i++ {
-		data[i] = i
-	}
-	return data
+	return jarr.EachIntIndex(make([]int, size), func(i int, e *int) { *e = i })
 }
 
 func main() {
